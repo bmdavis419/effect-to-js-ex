@@ -1,0 +1,38 @@
+@import 'tailwindcss';
+
+@layer base {
+	:root {
+		/* Light mode - Tailwind neutral colors */
+		--color-background: #ffffff;
+		--color-foreground: #171717;
+		--color-muted: #f5f5f5;
+		--color-muted-foreground: #737373;
+		--color-border: #e5e5e5;
+		--color-input: #f5f5f5;
+		--color-ring: #d4d4d8;
+
+		/* Primary color */
+		--color-primary: #f97316;
+		--color-primary-foreground: #ffffff;
+	}
+
+	* {
+		@apply border-border;
+	}
+
+	body {
+		@apply bg-background text-foreground;
+		color-scheme: light;
+	}
+}
+
+@layer components {
+	/* Primary color utilities */
+	.primary {
+		@apply bg-[#f97316] text-white;
+	}
+
+	.primary-foreground {
+		@apply text-[#f97316];
+	}
+}
