@@ -1,5 +1,6 @@
 <script lang="ts">
 	import DisplayAppError from '$lib/components/DisplayAppError.svelte';
+	import Toast from '$lib/components/Toast.svelte';
 	import {
 		remoteClearMessages,
 		remoteGetMessages,
@@ -8,6 +9,7 @@
 	import { isHttpError } from '@sveltejs/kit';
 
 	let newMessage = $state('');
+	let toastMessage = $state<string | null>(null);
 
 	const trimmedMessage = $derived(newMessage.trim());
 
@@ -17,7 +19,7 @@
 		} catch (e) {
 			if (isHttpError(e)) {
 				console.error('HTTP error:', e.body.cause);
-				alert(`FAILURE: ${e.body.cause}`);
+				toastMessage = String(e.body.cause);
 			}
 		}
 	}
@@ -30,17 +32,20 @@
 		} catch (e) {
 			if (isHttpError(e)) {
 				console.error('HTTP error:', e.body.cause);
-				alert(`FAILURE: ${e.body.cause}`);
+				toastMessage = String(e.body.cause);
 			}
 		}
 	}
 </script>
 
-<div class="min-h-screen bg-gray-900 text-white p-4">
+<div class="min-h-screen bg-white text-gray-900 p-4">
+	{#if toastMessage}
+		<Toast message={toastMessage} type="error" onDismiss={() => (toastMessage = null)} />
+	{/if}
 	<div class="max-w-md mx-auto">
-		<h1 class="text-2xl mb-4">Messages</h1>
+		<h1 class="text-3xl font-light mb-6 tracking-tight">Messages</h1>
 		<form
-			class="flex gap-2 mb-4"
+			class="flex gap-2 mb-6"
 			onsubmit={(e) => {
 				e.preventDefault();
 				sendMessage();
@@ -49,30 +54,33 @@
 			<input
 				bind:value={newMessage}
 				placeholder="Type a message..."
-				class="flex-1 bg-gray-800 text-white border border-gray-600 p-2 rounded"
+				class="flex-1 bg-gray-50 text-gray-900 border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400"
 			/>
-			<button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+			<button
+				type="submit"
+				class="bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded-lg transition"
+			>
 				Send
 			</button>
 			<button
 				type="button"
 				onclick={clearMessages}
-				class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+				class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition"
 			>
-				Clear Messages
+				Clear
 			</button>
 		</form>
 		<svelte:boundary>
-			<ul class="space-y-2">
+			<ul class="space-y-2.5">
 				{#each await remoteGetMessages() as msg}
-					<li class="bg-gray-800 p-2 rounded">{msg}</li>
+					<li class="bg-gray-50 text-gray-800 p-3 rounded-lg border border-gray-200">{msg}</li>
 				{/each}
 			</ul>
 			{#if (await remoteGetMessages()).length === 0}
-				<p>No messages yet.</p>
+				<p class="text-gray-500 text-center py-4">No messages yet.</p>
 			{/if}
 			{#snippet pending()}
-				<p>Loading...</p>
+				<p class="text-gray-500 text-center py-4">Loading...</p>
 			{/snippet}
 			{#snippet failed(err, retry)}
 				<DisplayAppError error={err} {retry} />
