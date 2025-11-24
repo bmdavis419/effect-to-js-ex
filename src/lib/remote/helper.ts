@@ -16,8 +16,14 @@ class AppError extends Data.TaggedError('AppError') {
 
 const runtime = ManagedRuntime.make(Layer.mergeAll(DbService.Default));
 
-export const remoteRunner = async <A>(effect: Effect.Effect<A, AppError | DbError, DbService>) => {
-	const result = await effect.pipe(
+export const remoteRunner = async <A>(
+	effect: Effect.Effect<A, AppError | DbError, DbService>,
+	traceName = ''
+) => {
+	const fn = Effect.fn(traceName)(function* () {
+		return yield* effect;
+	})();
+	const result = await fn.pipe(
 		Effect.catchTag('DbError', (err) =>
 			Effect.fail(
 				new AppError({
@@ -37,6 +43,7 @@ export const remoteRunner = async <A>(effect: Effect.Effect<A, AppError | DbErro
 
 				if (failures.length > 0) {
 					failures.forEach((failure) => {
+						console.log(failure.stack);
 						console.error(`FAILURE TYPE: ${failure.body.type}`);
 						console.error(`FAILURE MESSAGE: ${failure.message}`);
 						if (failure.cause) {

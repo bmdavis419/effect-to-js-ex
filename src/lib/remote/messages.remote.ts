@@ -9,7 +9,8 @@ export const remoteGetMessages = query(async () => {
 			const db = yield* DbService;
 			const messages = yield* db.getAllMessages();
 			return messages;
-		})
+		}),
+		'get messages'
 	);
 });
 
@@ -20,7 +21,8 @@ export const remoteClearMessages = command(async () => {
 			yield* db.clearMessages();
 			yield* Effect.promise(() => remoteGetMessages().refresh());
 			return 'Messages cleared';
-		})
+		}),
+		'clear messages'
 	);
 });
 
@@ -35,6 +37,7 @@ export const remoteSendMessage = command(sendMessageSchema, async ({ message }) 
 			yield* db.addMessage(message);
 			yield* Effect.promise(() => remoteGetMessages().refresh());
 			return message;
-		})
+		}),
+		'send message'
 	);
 });
