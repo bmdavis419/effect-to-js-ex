@@ -2,17 +2,15 @@
 
 ## Build & Development Commands
 
-- **Dev server**: `npm run dev` - Start Vite dev server
-- **Build**: `npm run build` - Production build with vite
-- **Type check**: `npm run check` - Run svelte-check with TypeScript
-- **Type check watch**: `npm run check:watch` - Watch mode for type checking
-- **Format code**: `npm run format` - Auto-format with Prettier
-- **Lint**: `npm run lint` - Check formatting with Prettier (no modifications)
-- **Preview**: `npm run preview` - Preview production build locally
+ALWAYS USE BUN AS THE PACKAGE MANAGER 
+
+- **Type check**: `bun run check` - Run svelte-check with TypeScript
+- **Format code**: `bun run format` - Auto-format with Prettier
+- **Lint**: `bun run lint` - Check formatting with Prettier (no modifications)
 
 ## Code Style Guidelines
 
-**Formatting**: Tabs (not spaces), single quotes, print width 100, no trailing commas. Use `npm run format` before commits.
+**Formatting**: Tabs (not spaces), single quotes, print width 100, no trailing commas. Use `bun run format` before commits.
 
 **TypeScript**: Strict mode enabled. Use explicit types, avoid `any`. Relative imports automatically rewritten to extensions by tsconfig.
 
