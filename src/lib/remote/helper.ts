@@ -33,14 +33,15 @@ export const remoteRunner = async <A>(effect: Effect.Effect<A, AppError | DbErro
 				value: res
 			}),
 			onFailure: (cause): { _type: 'failure'; value: AppError } => {
-				console.error(cause.toString());
-
 				const failures = Array.from(Cause.failures(cause));
 
 				if (failures.length > 0) {
 					failures.forEach((failure) => {
-						console.error(failure.toString());
-						console.error('CAUSE', failure.cause);
+						console.error(`FAILURE TYPE: ${failure.body.type}`);
+						console.error(`FAILURE MESSAGE: ${failure.message}`);
+						if (failure.cause) {
+							console.error('FAILURE CAUSE', failure.cause);
+						}
 					});
 					const first = failures[0];
 					if (first) {
